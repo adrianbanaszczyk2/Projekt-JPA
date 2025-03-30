@@ -1,52 +1,43 @@
 package com.jpacourse.persistance.entity;
 
 import java.time.LocalDate;
-import java.util.Collection;
-
+import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "PATIENT")
 public class PatientEntity {
 
-	@OneToMany(
-			cascade = CascadeType.ALL,
-			fetch = FetchType.EAGER
-	)
-	@JoinColumn(name = "PATIENT_ID")
-	private Collection<VisitEntity> visitEntities; //jednostrona od strony rodzica
-
-	@ManyToMany(
-			cascade = CascadeType.ALL, // default: empty
-			fetch = FetchType.LAZY // default: LAZY
-	)
-	@JoinTable(
-			name = "PATIENT_TO_ADDRESS",
-			joinColumns = @JoinColumn(name = "PATIENT_ID"),
-			inverseJoinColumns = @JoinColumn(name = "ADDRESS_ID")
-	)
-	private Collection<AddressEntity> addressEntities; //jednostronna od strony dziecka
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(nullable = false, name = "first_name")
 	private String firstName;
 
-	@Column(nullable = false)
+	@Column(nullable = false, name = "last_name")
 	private String lastName;
 
-	@Column(nullable = false)
+	@Column(nullable = false, name = "telephone_number")
 	private String telephoneNumber;
 
 	private String email;
 
-	@Column(nullable = false)
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "ADDRESS_ID", referencedColumnName = "id")
+	private AddressEntity address;
+
+	@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<VisitEntity> visits;
+
+	@Column(nullable = false, name = "patient_number ")
 	private String patientNumber;
 
 	@Column(nullable = false)
 	private LocalDate dateOfBirth;
+
+	@Column(name="is_insured")
+	private Boolean isInsured;
 
 	public Long getId() {
 		return id;
@@ -104,4 +95,19 @@ public class PatientEntity {
 		this.dateOfBirth = dateOfBirth;
 	}
 
+	public List<VisitEntity> getVisits() {
+		return visits;
+	}
+
+	public void setVisits(List<VisitEntity> visits) {
+		this.visits = visits;
+	}
+
+	public AddressEntity getAddress() {
+		return address;
+	}
+
+	public void setAddress(AddressEntity address) {
+		this.address = address;
+	}
 }

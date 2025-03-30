@@ -6,25 +6,10 @@ import jakarta.persistence.*;
 
 import java.util.Collection;
 
+
 @Entity
 @Table(name = "DOCTOR")
 public class DoctorEntity {
-
-	@OneToMany(
-			cascade = CascadeType.ALL,
-			fetch = FetchType.EAGER
-	)
-	@JoinColumn(name = "DOCTOR_ID")
-	private Collection<VisitEntity> visitEntities; //jednostronna od strony rodzica
-
-	@ManyToMany
-	@JoinTable(
-			name = "DOCTOR_TO_ADDRESS",
-			joinColumns = @JoinColumn(name = "DOCTOR_ID"),
-			inverseJoinColumns = @JoinColumn(name = "ADDRESS_ID")
-	)
-	private Collection<AddressEntity> addressEntities;
-
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +24,7 @@ public class DoctorEntity {
 	@Column(nullable = false)
 	private String telephoneNumber;
 
+	@Column(nullable = false)
 	private String email;
 
 	@Column(nullable = false)
@@ -47,6 +33,13 @@ public class DoctorEntity {
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Specialization specialization;
+
+	@OneToOne
+	private AddressEntity address;
+
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "DOCTOR_ID")
+	private Collection<VisitEntity> visits;
 
 	public Long getId() {
 		return id;
@@ -104,4 +97,19 @@ public class DoctorEntity {
 		this.specialization = specialization;
 	}
 
+	public Collection<VisitEntity> getVisits() {
+		return visits;
+	}
+
+	public void setVisits(Collection<VisitEntity> visits) {
+		this.visits = visits;
+	}
+
+	public AddressEntity getAddress() {
+		return address;
+	}
+
+	public void setAddress(AddressEntity address) {
+		this.address = address;
+	}
 }

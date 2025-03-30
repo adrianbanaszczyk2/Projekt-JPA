@@ -3,31 +3,29 @@ package com.jpacourse.persistance.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Collection;
-
 @Entity
 @Table(name = "ADDRESS")
 public class AddressEntity {
-
-	@ManyToMany(mappedBy = "addressEntities")
-	private Collection<DoctorEntity> doctorEntities ;
-
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
 	private String city;
 
-	@Column(nullable = false)
 	private String addressLine1;
 
-	@Column(nullable = false)
 	private String addressLine2;
 
-	@Column(nullable = false)
 	private String postalCode;
+
+	@OneToOne(mappedBy = "address")
+	private DoctorEntity doctor;
+
+
+	@OneToOne(mappedBy = "address")
+	private PatientEntity patient;
+
 
 	public Long getId() {
 		return id;
@@ -69,4 +67,12 @@ public class AddressEntity {
 		this.postalCode = postalCode;
 	}
 
+	public PatientEntity getPatient() {
+		return patient;
+	}
+
+	public void setPatient(PatientEntity patient) {
+		this.patient = patient;
+	}
 }
+
