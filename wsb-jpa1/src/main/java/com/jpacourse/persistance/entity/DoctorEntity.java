@@ -4,9 +4,27 @@ import com.jpacourse.persistance.enums.Specialization;
 
 import jakarta.persistence.*;
 
+import java.util.Collection;
+
 @Entity
 @Table(name = "DOCTOR")
 public class DoctorEntity {
+
+	@OneToMany(
+			cascade = CascadeType.ALL,
+			fetch = FetchType.EAGER
+	)
+	@JoinColumn(name = "DOCTOR_ID")
+	private Collection<VisitEntity> visitEntities; //jednostronna od strony rodzica
+
+	@ManyToMany
+	@JoinTable(
+			name = "DOCTOR_TO_ADDRESS",
+			joinColumns = @JoinColumn(name = "DOCTOR_ID"),
+			inverseJoinColumns = @JoinColumn(name = "ADDRESS_ID")
+	)
+	private Collection<AddressEntity> addressEntities;
+
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
